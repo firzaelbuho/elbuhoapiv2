@@ -1,19 +1,47 @@
-interface User {
-    userId: number;
-    username: string;
-    password: string;
-    fullName: string;
+import { DataTypes, Model, Optional } from 'sequelize';
+import sequelize from '../config/database';
+
+interface UserAttributes {
+  userId: number;
+  username: string;
+  password: string;
+  fullName: string;
 }
 
-let users: User[] = [
-    { userId: 1, username: 'JohnDoe', password: 'password123', fullName: 'John Doe' },
-    { userId: 2, username: 'JaneSmith', password: 'password456', fullName: 'Jane Smith' }
-];
+interface UserCreationAttributes extends Optional<UserAttributes, 'userId'> {}
 
-const userModel = {
-    getUsers: (): User[] => users,
-    getUserById: (id: string): User | undefined => users.find(user => user.userId === parseInt(id)),
-    // Implementasi fungsi lainnya (createUser, updateUser, deleteUser)
-};
+class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+  public userId!: number;
+  public username!: string;
+  public password!: string;
+  public fullName!: string;
+}
 
-export default userModel;
+User.init(
+  {
+    userId: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    fullName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  {
+    sequelize,
+    tableName: 'users',
+    timestamps: true, // enable timestamps
+  }
+);
+
+export default User;

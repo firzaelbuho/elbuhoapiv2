@@ -1,25 +1,20 @@
-import express, { Application, Request, Response } from 'express';
+import express from 'express';
 import userRoutes from './routes/userRoutes';
+import sequelize from './config/database';
+import User from './models/userModel';
 
-const app: Application = express();
-const PORT = process.env.PORT || 3000;
+const app = express();
+const port = process.env.PORT || 3000;
 
-// Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/api/users', userRoutes);
 
-// Routes
-app.use('/api', userRoutes);
-
-// Error handling middleware
-app.use((err: Error, req: Request, res: Response) => {
-    console.error(err.stack);
-    res.status(500).json({
-        success: false,
-        message: 'Internal server error',
-        data: {}
-    });
-});
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+// Sync database and start server
+sequelize.sync().then(() => {
+  app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+  });
+}).catch((error) => {
+  console.error('Unable to connect to the database:', error);
 });
