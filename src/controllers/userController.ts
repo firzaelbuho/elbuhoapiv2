@@ -34,7 +34,7 @@ export const loginUser = async (req: Request, res: Response) => {
       });
     }
 
-    const token = generateToken(user.userId,user.username, user.fullName);
+    const token = generateToken(user.userId,user.username);
     res.status(200).json({
       success: true,
       message: 'Login successful',
@@ -110,7 +110,7 @@ export const createUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
     try {
         const userId = req.params.id;
-        const { username, password, fullName } = req.body;
+        const { username, password, firstName, lastName } = req.body;
     
         const user = await User.findByPk(userId);
         if (!user) {
@@ -122,7 +122,8 @@ export const updateUser = async (req: Request, res: Response) => {
     
         user.username = username;
         user.password = password; // Password akan di-hash oleh hook `beforeUpdate`
-        user.fullName = fullName;
+        user.firstName = firstName;
+        user.lastName = lastName;
     
         await user.save();
         res.status(200).json({

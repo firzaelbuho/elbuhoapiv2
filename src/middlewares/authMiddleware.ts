@@ -4,8 +4,8 @@ import jwt from 'jsonwebtoken';
 
 const secret = 'elbuhoapi'; // Gantilah dengan secret key Anda
 
-export const generateToken = (idUser: number, username: string, fullName: string) => {
-    return jwt.sign({ idUser, username, fullName }, secret, { expiresIn: '1h' });
+export const generateToken = (idUser: number, username: string) => {
+    return jwt.sign({ idUser, username }, secret, { expiresIn: '1h' });
 };
 
 // export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
