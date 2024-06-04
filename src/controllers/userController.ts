@@ -1,5 +1,49 @@
 import { Request, Response } from 'express';
 import User from '../models/userModel';
+import { generateToken } from '../middlewares/authMiddleware';
+import bcrypt from 'bcrypt';
+
+const handleError = (res: Response, error: any) => {
+  const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+  res.status(500).json({
+    success: false,
+    message: 'An error occurred',
+    error: errorMessage,
+    details: error.errors ? error.errors.map((err: any) => err.message) : undefined,
+  });
+};
+
+// Login and generate jwt token
+export const loginUser = async (req: Request, res: Response) => {
+  try {
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ where: { username } });
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid username or password',
+      });
+    }
+
+    const passwordIsValid = await bcrypt.compare(password, user.password);
+    if (!passwordIsValid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid username or password',
+      });
+    }
+
+    const token = generateToken(user.userId,user.username, user.fullName);
+    res.status(200).json({
+      success: true,
+      message: 'Login successful',
+      data: { token },
+    });
+  } catch (error) {
+    handleError(res, error);
+  }
+};
 
 // Get all users
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -64,28 +108,34 @@ export const createUser = async (req: Request, res: Response) => {
 
 // Update user by ID
 export const updateUser = async (req: Request, res: Response) => {
-  try {
-    const [updated] = await User.update(req.body, {
-      where: { userId: req.params.id }
-    });
-    if (updated) {
-      const updatedUser = await User.findByPk(req.params.id);
-      res.status(200).json({
-        success: true,
-        message: 'User updated successfully',
-        data: updatedUser,
-      });
-    } else {
-      res.status(404).json({
+    try {
+        const userId = req.params.id;
+        const { username, password, fullName } = req.body;
+    
+        const user = await User.findByPk(userId);
+        if (!user) {
+          return res.status(404).json({
+            success: false,
+            message: 'User not found',
+          });
+        }
+    
+        user.username = username;
+        user.password = password; // Password akan di-hash oleh hook `beforeUpdate`
+        user.fullName = fullName;
+    
+        await user.save();
+        res.status(200).json({
+          success: true,
+          message: 'User updated successfully',
+          data: user,
+        });
+      } 
+    catch (error:any) {
+        res.status(500).json({
         success: false,
-        message: 'User not found',
-      });
-    }
-  } catch (error:any) {
-    res.status(500).json({
-      success: false,
-      message: 'Failed to update user',
-      error: error.message,
+        message: 'Failed to update user',
+        error: error.message,
     });
   }
 };

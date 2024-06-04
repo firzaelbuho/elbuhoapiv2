@@ -1,4 +1,5 @@
 import { DataTypes, Model, Optional } from 'sequelize';
+import bcrypt from 'bcrypt';
 import sequelize from '../config/database';
 
 interface UserAttributes {
@@ -41,6 +42,16 @@ User.init(
     sequelize,
     tableName: 'users',
     timestamps: true, // enable timestamps
+    hooks: {
+      beforeCreate: async (user: User) => {
+        user.password = await bcrypt.hash(user.password, 10);
+      },
+      beforeUpdate: async (user: User) => {
+        if (user.changed('password')) {
+          user.password = await bcrypt.hash(user.password, 10);
+        }
+      }
+    }
   }
 );
 
