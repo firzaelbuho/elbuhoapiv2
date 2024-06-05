@@ -14,6 +14,7 @@ interface UserAttributes {
   resetPasswordToken: string | null;
   resetPasswordExpires: Date | null;
   isActive: boolean;
+  activationToken:string | null;
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'userId' | 'emailVerified' | 'resetPasswordToken' | 'resetPasswordExpires' | 'isActive'> {}
@@ -29,6 +30,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public resetPasswordToken!: string | null;
   public resetPasswordExpires!: Date | null;
   public isActive!: boolean;
+  public activationToken!: string | null;
 }
 
 User.init({
@@ -76,6 +78,10 @@ User.init({
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: true,
+  },
+  activationToken: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
 }, {
   sequelize,

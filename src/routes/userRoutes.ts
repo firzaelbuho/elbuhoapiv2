@@ -1,13 +1,24 @@
 import { Router } from 'express';
-import { getAllUsers, getUserById, createUser, updateUser, deleteUser, loginUser } from '../controllers/userController';
+import { requestPasswordReset, resetPassword,getAllUsers, getUserById, createUser, updateUser, deleteUser, loginUser , sendActivationEmail, activateAccount} from '../controllers/userController';
+import { checkResetToken, checkUsernameAvailability, checkEmailAvailability } from '../controllers/userController';
 
 const router = Router();
 
-router.get('/', getAllUsers);
-router.get('/:id', getUserById);
-router.post('/', createUser);
-router.put('/:id', updateUser);
-router.delete('/:id', deleteUser);
-router.post('/login', loginUser); // Endpoint login
+router.get('/', getAllUsers); // Get All User
+router.get('/:id', getUserById); // Get User by ID
+router.post('/', createUser); // Create new User
+router.put('/:id', updateUser); // Update User
+router.delete('/:id', deleteUser); // Delete User
+router.post('/login', loginUser); // Login
+
+router.post('/send-activation-email', sendActivationEmail);
+router.get('/activate/:token', activateAccount);
+
+router.post('/request-password-reset', requestPasswordReset);
+router.post('/reset-password/', resetPassword);
+
+router.get('/check-reset-token/:token', checkResetToken);
+router.get('/check-username-availability/:username', checkUsernameAvailability);
+router.get('/check-email-availability/:email', checkEmailAvailability);
 
 export default router;
