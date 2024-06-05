@@ -5,6 +5,12 @@ import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 import { Op } from 'sequelize';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const baseUrl = process.env.BASE_URL;
+const appName = "ElbuhoAPI"
 
 const handleError = (res: Response, error: any) => {
   const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -43,11 +49,11 @@ export const requestPasswordReset = async (req: Request, res: Response) => {
     user.resetPasswordExpires = new Date(Date.now() + 3600000); // 1 hour from now
     await user.save();
 
-    const resetUrl = `http://localhost:3000/api/reset-password/${resetToken}`;
+    const resetUrl = `${baseUrl}/api/reset-password/${resetToken}`;
     const mailOptions = {
-      from: 'your-email@gmail.com',
+      from: appName,
       to: user.email,
-      subject: 'Password Reset',
+      subject: appName+' - Password Reset',
       text: `Please click the following link to reset your password: ${resetUrl}`,
     };
 
@@ -120,11 +126,11 @@ export const sendActivationEmail = async (req: Request, res: Response) => {
     user.activationToken = activationToken;
     await user.save();
 
-    const activationUrl = `http://localhost:3000/api/activate/${activationToken}`;
+    const activationUrl = `${baseUrl}/api/activate/${activationToken}`;
     const mailOptions = {
-      from: 'elbuho@gmail.com',
+      from: appName,
       to: user.email,
-      subject: 'Account Activation',
+      subject: appName+' - Account Activation',
       text: `Please click the following link to activate your account: ${activationUrl}`,
     };
 
