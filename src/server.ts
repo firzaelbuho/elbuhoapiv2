@@ -3,8 +3,13 @@ import userRoutes from './routes/userRoutes';
 import sequelize from './config/database';
 import User from './models/userModel';
 
+import cors from 'cors';
+// Gunakan cors middleware
+
+
 const app = express();
-const port = process.env.PORT || 3000;
+app.use(cors());
+const port = process.env.PORT || 4000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
