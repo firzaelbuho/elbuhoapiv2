@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import User from '../models/userModel';
-import { generateToken } from '../middlewares/authMiddleware';
+import User from '../../models/auth/userModel';
+import { generateToken } from '../../middlewares/authMiddleware';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';

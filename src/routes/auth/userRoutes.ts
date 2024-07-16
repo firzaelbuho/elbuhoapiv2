@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { requestPasswordReset, resetPassword,getAllUsers, getUserById, createUser, updateUser, deleteUser, loginUser , sendActivationEmail, activateAccount} from '../controllers/userController';
-import { checkResetToken, checkUsernameAvailability, checkEmailAvailability } from '../controllers/userController';
+import { requestPasswordReset, resetPassword,getAllUsers, getUserById, createUser, updateUser, deleteUser, loginUser , sendActivationEmail, activateAccount} from '../../controllers/auth/userController';
+import { checkResetToken, checkUsernameAvailability, checkEmailAvailability } from '../../controllers/auth/userController';
 
 const router = Router();
 

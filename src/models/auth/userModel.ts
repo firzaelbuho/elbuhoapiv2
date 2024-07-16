@@ -1,6 +1,6 @@
 // src/models/userModel.ts
 import { DataTypes, Model, Optional } from 'sequelize';
-import sequelize from '../config/database';
+import sequelize from '../../config/database';
 import bcrypt from 'bcrypt';
 
 interface UserAttributes {

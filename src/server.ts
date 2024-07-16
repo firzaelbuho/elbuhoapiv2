@@ -1,6 +1,6 @@
 import express from 'express';
 
-import userRoutes from './routes/userRoutes';
+import userRoutes from './routes/auth/userRoutes';
 import jobRoutes from './routes/rti/jobRoutes';
 import characterRoutes from './routes/rti/characterRoutes';
 import activityRoutes from './routes/rti/activityRoutes';
