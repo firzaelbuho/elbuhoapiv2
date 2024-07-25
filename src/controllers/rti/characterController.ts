@@ -25,6 +25,24 @@ export const getAllCharacters = async (req: Request, res: Response): Promise<voi
   }
 };
 
+export const getAllCharactersById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const charId = req.params.id;
+    const characters = await Character.findOne({where : {charId : charId}});
+    res.status(200).json({
+      success: true,
+      message: 'Characters retrieved successfully',
+      data: characters,
+    });
+  } catch (error:any) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve characters',
+      error: error.message,
+    });
+  }
+};
+
 export const getCharactersFull = async (req: Request, res: Response) => {
     try {
       const characters = await Character.findAll({
@@ -129,5 +147,114 @@ export const getCharactersFull = async (req: Request, res: Response) => {
       });
 
       return result;
+    }
+  };
+
+  export const getCharactersFullById = async (req: Request, res: Response) => {
+    const charId = req.params.id
+    try {
+      const character = await Character.findOne({
+        where : {charId},
+        include: [
+          {
+            model: Job,
+            as: 'jobs',
+            through: { attributes: [] },
+          },
+          {
+            model: Activity,
+            as: 'LikedActivities',
+            through: { attributes: [] },
+          },
+          {
+            model: Good,
+            as: 'LikedGoods',
+            through: { attributes: [] },
+          },
+          {
+            model: Food,
+            as: 'LikedFoods',
+            through: { attributes: [] },
+          },
+          {
+            model: Activity,
+            as: 'DislikedActivities',
+            through: { attributes: [] },
+          },
+          {
+            model: Good,
+            as: 'DislikedGoods',
+            through: { attributes: [] },
+          },
+          {
+            model: Food,
+            as: 'DislikedFoods',
+            through: { attributes: [] },
+          },
+          {
+            model: Character,
+            as: 'RelativeCharacters',
+            through: { attributes: ['relativeStatus'] },
+          },
+          {
+            model: Character,
+            as: 'RelativesOf',
+            through: { attributes: ['relativeStatus'] },
+          },
+        ],
+      });
+      
+      const result = remaps(character)
+      res.status(200).json({
+        success: true,
+        message: 'Characters retrieved successfully',
+        data: result
+      });
+     
+    } catch (error) {
+      res.status(500).json({ message: 'Server Error', error });
+    }
+
+
+    function remaps(character:Character | any){
+     
+        return {
+          charId: character.charId,
+          fullName: character.fullName,
+          nickname: character.nickname,
+          birthday: character.birthday,
+          age: character.age,
+          gender: character.gender,
+          origin: character.origin,
+          jobs: character.jobs,
+          isDateAble: character.isDateAble,
+          description: character.description,
+          likes: {
+            activities: character.LikedActivities,
+            goods: character.LikedGoods,
+            foods: character.LikedFoods,
+          },
+          dislikes: {
+            activities: character.DislikedActivities,
+            goods: character.DislikedGoods,
+            foods: character.DislikedFoods,
+          },
+
+          relatives: [
+            ...character.RelativeCharacters.map((relative: any) => ({
+              charId: relative.charId,
+              fullName: relative.fullName,
+              relative: relative.Relatives,
+            })),
+            // ...character.RelativesOf.map((relative: any) => ({
+            //   charId: relative.charId,
+            //   fullName: relative.fullName,
+            //   relativeStatus: relative.RelativesOf.relativeStatus,
+            // })),
+          ],
+        };
+     
+
+      
     }
   };
