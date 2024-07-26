@@ -11,7 +11,7 @@ import Relative from './relativeModel';
 interface CharacterAttributes {
   charId: number;
   fullName: string;
-  nickname?: string;
+  nickName?: string;
   birthday?: string;
   age?: number;
   gender?: string;
@@ -27,7 +27,8 @@ interface CharacterCreationAttributes extends Optional<CharacterAttributes, 'cha
 class Character extends Model<CharacterAttributes, CharacterCreationAttributes> implements CharacterAttributes {
   public charId!: number;
   public fullName!: string;
-  public nickname?: string;
+  public nickName?: string;
+  public callName?: string;
   public birthday?: string;
   public age?: number;
   public gender?: string;
@@ -47,7 +48,7 @@ Character.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    nickname: {
+    nickName: {
       type: DataTypes.STRING,
     },
     birthday: {
