@@ -5,7 +5,7 @@ dotenv.config();
 const isDevelopment = process.env.IS_DEVELOPMENT == "true";
 
 
-const databaseName = isDevelopment? "elbuhoapi" :"elbuhomy_elbuhoapi";
+const databaseName = isDevelopment? "elbuhoapi" :"elbuhoa2_elbuhoapi";
 const userName = isDevelopment? "root" : "elbuhomy_elbuho";
 const password = isDevelopment? "" : "apidroid1315";
 const host = isDevelopment? "localhost" : "www.elbuho.my.id";
